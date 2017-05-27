@@ -1,6 +1,6 @@
-// var inheritsFrom = function (child, parent) {
-//     child.prototype = Object.create(parent.prototype);
-// };
+var inheritsFrom = function (child, parent) {
+    child.prototype = Object.create(parent.prototype);
+};
 
 var enemies = [];
 
@@ -86,27 +86,27 @@ function updateEnemies () {
   // Torretas
   game.physics.arcade.overlap(enemyBullets, tank, bulletHitPlayer, null, this);
 
-    // if (torreta[0].alive) {
-    //   game.physics.arcade.collide(tank, torreta[0].baseTorreta);
-    //   game.physics.arcade.overlap(bullets, torreta[0].baseTorreta, bulletHitEnemy, null, this);
-    //   torreta[0].update();
-    // }
+    if (enemies[0].alive) {
+      game.physics.arcade.collide(tank, enemies[0].baseTorreta);
+      game.physics.arcade.overlap(bullets, enemies[0].baseTorreta, bulletHitEnemy, null, this);
+      enemies[0].update();
+    }
 
 
 }
 
-function bulletHitPlayer (tank, bullet) {
+function bulletHitPlayer (player, bullet) {
 
     bullet.kill();
     life--;
 
 }
 
-function bulletHitEnemy (tank, bullet) {
+function bulletHitEnemy (enemy, bullet) {
 
     bullet.kill();
 
-    var destroyed = enemies[tank.name].damage();
+    var destroyed = enemies[0].damage();
 
     if (destroyed)
     {
