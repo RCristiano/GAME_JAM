@@ -62,9 +62,11 @@ Zeruela = function (index, game, player, bullets, x, y) {
     this.nextFire = 0;
     this.alive = true;
 
+    this.baseTorreta = this;
+
     this.torreta = game.add.sprite(x, y, 'zeruela', 0);
     this.torreta.anchor.set(0.5);
-    this.torreta.scale.setTo(1.2, 1.2);
+    this.torreta.scale.setTo(1, 1);
 
     this.torreta.name = index.toString();
     game.physics.enable(this.torreta, Phaser.Physics.ARCADE);
@@ -72,6 +74,10 @@ Zeruela = function (index, game, player, bullets, x, y) {
     this.torreta.body.collideWorldBounds = true;
 
     this.torreta.angle = game.rnd.angle();
+
+    this.baseTorreta = this.torreta;
+
+    game.physics.arcade.velocityFromRotation(this.torreta.rotation, 100, this.torreta.body.velocity);
 }
 
 Avoa = function (index, game, player, bullets, x, y) {
@@ -100,7 +106,7 @@ Enemy.prototype.damage = function() {
 
 Enemy.prototype.update = function() {
 
-    this.baseTorreta.x = this.torreta.x
+    this.baseTorreta.x = this.torreta.x;
     this.baseTorreta.y = this.torreta.y
 
     this.torreta.rotation = this.game.physics.arcade.angleBetween(this.torreta, this.player);
@@ -123,6 +129,7 @@ Enemy.prototype.update = function() {
 
 inheritsFrom(Torreta, Enemy);
 inheritsFrom(Tornera, Enemy);
+inheritsFrom(Zeruela, Enemy);
 
 Tornera.prototype.update = function() {
 
@@ -161,6 +168,8 @@ function createEnemies () {
     enemyBullets.setAll('outOfBoundsKill', true);
     enemyBullets.setAll('checkWorldBounds', true);
 
+    enemyBullets.callAll("bringToTop");
+
     //  The torneras bullet group
     tornerasBullets = game.add.group();
     tornerasBullets.enableBody = true;
@@ -174,9 +183,8 @@ function createEnemies () {
 
     enemies.push(new Torreta(0, game, tank, enemyBullets, -60, 200));
     enemies.push(new Torreta(1, game, tank, enemyBullets, -200, -100));
-    // enemies.push(new Torreta(2, game, tank, enemyBullets, 0, 0));
-    // enemies.push(new Torreta(3, game, tank, enemyBullets, 100, 100));
     enemies.push(new Tornera(2, game, tank, tornerasBullets, -100, 100));
+    enemies.push(new Zeruela(3, game, tank, enemyBullets, 50, 100));
 }
 
 function updateEnemies () {
@@ -199,6 +207,12 @@ function updateEnemies () {
 function bulletHitPlayer (player, bullet) {
 
     bullet.kill();
+
+    var explosionAnimation = explosions.getFirstExists(false);
+        explosionAnimation.reset(player.x, player.y);
+        explosionAnimation.scale.setTo(1);
+        explosionAnimation.play('kaboom', 30, false, true);
+
     life--;
 }
 
@@ -212,6 +226,7 @@ function bulletHitEnemy (enemy, bullet) {
     {
         var explosionAnimation = explosions.getFirstExists(false);
         explosionAnimation.reset(enemy.x, enemy.y);
+        explosionAnimation.scale.setTo(2);
         explosionAnimation.play('kaboom', 30, false, true);
     }
 
