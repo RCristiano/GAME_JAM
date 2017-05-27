@@ -31,7 +31,7 @@ EnemyTank = function (index, game, player, bullets) {
 
     this.shadow.anchor.set(0.5);
     this.tank.anchor.set(0.5);
-    this.turret.anchor.set(0.3, 0.5);x
+    this.turret.anchor.set(0.3, 0.5);
 
     this.tank.name = index.toString();
     game.physics.enable(this.tank, Phaser.Physics.ARCADE);
@@ -41,7 +41,7 @@ EnemyTank = function (index, game, player, bullets) {
 
     this.tank.angle = game.rnd.angle();
 
-    // game.physics.arcade.velocityFromRotation(this.tank.rotation, 100, this.tank.body.velocity);
+    game.physics.arcade.velocityFromRotation(this.tank.rotation, 100, this.tank.body.velocity);
 
 };
 
