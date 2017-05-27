@@ -27,7 +27,7 @@ Torreta = function (index, game, player, bullets, x, y) {
     this.torreta.angle = game.rnd.angle(); //Angulo inicial random (eu acho)
 }
 
-Torreta.prototype.damage = function() {
+Torreta.damage = function() {
 
     this.health -= 1;
 
@@ -65,6 +65,13 @@ Torreta.prototype.update = function() {
 
 };
 
+inheritsFrom(Tornera, Torreta);
+
+
+Tornera = function () {
+    
+}
+
 function createEnemies () {
 
     //  The enemies bullet group
@@ -99,7 +106,6 @@ function bulletHitPlayer (player, bullet) {
 
     bullet.kill();
     life--;
-
 }
 
 function bulletHitEnemy (enemy, bullet) {
