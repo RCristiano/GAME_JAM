@@ -18,6 +18,25 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: p
 
 Tornera = function (index, game, player, bullets, x, y) {
   
+    this.game = game;
+    this.health = 3;
+    this.player = player;
+    this.bullets = bullets;
+    this.fireRate = 1000;
+    this.nextFire = 0;
+    this.alive = true;
+
+    this.baseTorreta = game.add.sprite(x, y, 'torret'); //Configurar
+    this.torreta = game.add.sprite(x, y, 'torret'); //Configurar
+
+    this.torreta.anchor.set(0.3, 0.5); //Configurar
+
+    this.torreta.name = index.toString();
+    game.physics.enable(this.baseTorreta, Phaser.Physics.ARCADE);
+    this.baseTorreta.body.immovable = true;
+    this.baseTorreta.body.collideWorldBounds = true;
+
+    this.torreta.angle = game.rnd.angle(); //Angulo inicial random (eu acho)
 }
 
 Torreta = function (index, game, player, bullets, x, y) {
@@ -79,7 +98,7 @@ Torreta.prototype.update = function() {
         }
     }
 
-};
+}
 
 function preload () {
 

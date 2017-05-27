@@ -10,80 +10,19 @@
 
 <body>
 
+<script type="text/javascript" src="enemies.js"></script>
+
 <script type="text/javascript">
-
-
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
-Torreta = function (index, game, player, bullets, x, y) {
-
-    this.game = game;
-    this.health = 3;
-    this.player = player;
-    this.bullets = bullets;
-    this.fireRate = 1000;
-    this.nextFire = 0;
-    this.alive = true;
-
-    this.baseTorreta = game.add.sprite(x-17, y-20, 'torretbase'); //Configurar
-    this.torreta = game.add.sprite(x, y, 'torret'); //Configurar
-    this.torreta.scale.setTo(1.2, 1.2);
-    this.torreta.anchor.set(0.3, 0.4); //Configurar
-
-    this.torreta.name = index.toString();
-    game.physics.enable(this.baseTorreta, Phaser.Physics.ARCADE);
-    this.baseTorreta.body.immovable = true;
-    this.baseTorreta.body.collideWorldBounds = true;
-
-    this.torreta.angle = game.rnd.angle(); //Angulo inicial random (eu acho)
-}
-
-Torreta.prototype.damage = function() {
-
-    this.health -= 1;
-
-    if (this.health <= 0)
-    {
-        this.alive = false;
-
-        this.baseTorreta.kill();
-        this.torreta.kill();
-
-        return true;
-    }
-
-    return false;
-
-}
-
-Torreta.prototype.update = function() {
-
-    this.torreta.rotation = this.game.physics.arcade.angleBetween(this.torreta, this.player);
-
-    if (this.game.physics.arcade.distanceBetween(this.torreta, this.player) < 500)
-    {
-        if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0)
-        {
-            this.nextFire = this.game.time.now + this.fireRate;
-
-            var bullet = this.bullets.getFirstDead();
-
-            bullet.reset(this.torreta.x, this.torreta.y);
-
-            bullet.rotation = this.game.physics.arcade.moveToObject(bullet, this.player, 500);
-        }
-    }
-
-};
-
-function preload () {
+function preload () { //CARREGA TODAS AS IMAGENS
 
     game.load.image('logo', 'assets/logo.png');
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('room', 'assets/room.jpg');
     game.load.image('fundo', 'assets/fundo.jpg');
-    game.load.image('star', 'assets/star.png');
+    game.load.spritesheet('star', 'assets/star.png', 13, 22, 4);
     game.load.spritesheet('kaboom', 'assets/explosion.png', 100, 100, 6);
     game.load.spritesheet('energybar', 'assets/energy.png', 150, 30, 3);
     game.load.spritesheet('torret', 'assets/torret.png', 39, 16, 2);
@@ -132,8 +71,6 @@ function create () {
   space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   explo = game.input.keyboard.addKey(Phaser.Keyboard.E);
 
-
-
     //  Resize our game world to be a 2000 x 2000 square
     game.world.setBounds(-1000, -1000, 2000, 2000);
 
@@ -175,16 +112,7 @@ function create () {
     bullets.setAll('outOfBoundsKill', true);
     bullets.setAll('checkWorldBounds', true);
 
-    //  The enemies bullet group
-    enemyBullets = game.add.group();
-    enemyBullets.enableBody = true;
-    enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
-    enemyBullets.createMultiple(100, 'bullet');
-
-    enemyBullets.setAll('anchor.x', 0.5);
-    enemyBullets.setAll('anchor.y', 0.5);
-    enemyBullets.setAll('outOfBoundsKill', true);
-    enemyBullets.setAll('checkWorldBounds', true);
+    createEnemies();
 
     //  Explosion pool
     explosions = game.add.group();
@@ -198,9 +126,6 @@ function create () {
 
     tank.bringToTop();
     turret.bringToTop();
-
-    //Torretas
-    torreta1 = new Torreta(1, game, tank, enemyBullets, 100, 100);
 
     logo = game.add.sprite(0, 0, 'logo');
     logo.fixedToCamera = true;
@@ -244,14 +169,8 @@ function removeLogo () {
 
 function update () {
 
-  // Torretas
-  game.physics.arcade.overlap(enemyBullets, tank, bulletHitPlayer, null, this);
-
-  if (torreta1.alive) {
-    game.physics.arcade.collide(tank, torreta1.baseTorreta);
-    game.physics.arcade.overlap(bullets, torreta1.baseTorreta, bulletHitEnemy, null, this);
-    torreta1.update();
-  }
+  // Enemies
+  updateEnemies();
 
   //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
   game.physics.arcade.overlap(tank, stars, collectStar, null, this);
