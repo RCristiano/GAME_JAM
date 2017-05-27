@@ -16,7 +16,11 @@ function preload () {
     game.load.spritesheet('torretbase', 'assets/torretbase.png', 36, 46, 6);
     game.load.spritesheet('corpo', 'assets/CORPO.png', 60, 36, 3);
     game.load.spritesheet('pernas', 'assets/PERNAS.png', 60, 36, 5);
-
+    game.load.spritesheet('disco1', 'assets/disco1.png', 50, 50, 1);
+    game.load.spritesheet('disco2', 'assets/disco2.png', 50, 50, 1);
+    game.load.spritesheet('disco3', 'assets/disco3.png', 50, 50, 1);
+    game.load.spritesheet('disco4', 'assets/disco4.png', 50, 50, 1);
+    
 }
 
 var land;
@@ -34,8 +38,10 @@ var enemiesAlive = 0;
 var explosions;
 
 var logo;
-var stars;
 var score = 0;
+var stars;
+var discos;
+var discoList = [];
 var energy = 0;
 var life = 20;
 var torreta;
@@ -48,6 +54,9 @@ var cursors;
 var bullets;
 var fireRate = 200;
 var nextFire = 0;
+
+
+
 
 function create () {
 
@@ -63,7 +72,7 @@ function create () {
     //  Resize our game world to be a 2000 x 2000 square
     game.world.setBounds(-1000, -1000, 2000, 2000);
 
-
+    
     //ROOM!!!!
     room = game.add.sprite(200,200, 'room')
     fundo = game.add.sprite(-1000, -1000, 'fundo');
@@ -118,8 +127,6 @@ function create () {
     tank.bringToTop();
     turret.bringToTop();
 
-    //Torretas
-    torreta1 = new Torreta(1, game, tank, enemyBullets, 100, 100);
 
     logo = game.add.sprite(0, 0, 'logo');
     logo.fixedToCamera = true;
@@ -158,6 +165,28 @@ function create () {
     star.play('can');
 
 
+
+  //DISCOS INICIO
+        discos1 = game.add.group();
+        discos1.enableBody = true;
+        discos2 = game.add.group();
+        discos2.enableBody = true;
+        discos3 = game.add.group();
+        discos3.enableBody = true;
+        discos4 = game.add.group();
+        discos4.enableBody = true;
+        
+        var disco1 = discos1.create(150, 200, 'disco1',1);
+        var disco2 = discos2.create(150, 250, 'disco2',2);
+        var disco3 = discos3.create(150, 300, 'disco3',3);
+        var disco4 = discos4.create(150, 350, 'disco4',4);
+        
+  //DISCOS FIM
+    
+        
+    
+    
+    
 //HUD
 
     energybar = game.add.sprite(550, 540, 'energybar');
@@ -187,6 +216,33 @@ function update () {
   //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
   game.physics.arcade.overlap(tank, stars, collectStar, null, this);
 
+  
+  //DISCOS INICIO
+  if (game.physics.arcade.overlap(tank, discos1, collectDisco, null, this)) {
+	  verificaDisco('disco1',1);
+  }
+ 
+  if (game.physics.arcade.overlap(tank, discos2, collectDisco, null, this)) {
+	  verificaDisco('disco2',2);
+  }
+  
+  if (game.physics.arcade.overlap(tank, discos3, collectDisco, null, this)) {
+	  verificaDisco('disco3',3);
+  }
+  
+  if (game.physics.arcade.overlap(tank, discos4, collectDisco, null, this)) {
+	  verificaDisco('disco4',4);
+  }
+  
+
+  function verificaDisco(paramValue, paramNum){
+	  discosbar = game.add.sprite(20+(paramNum*20),470,paramValue,paramNum);
+	  discosbar.scale.setTo(0.3,0.3);
+      discosbar.fixedToCamera = true;
+  	}
+  //DISCOS FIM
+  
+  
     if (leftKey.isDown)
     {
         tank.angle = 180;
@@ -344,7 +400,14 @@ function collectStar (tank, star) {
       energy++;
     }
 
-
-
 }
+
+
+// Coleta os Discos
+function collectDisco(tank, discos) {
+    // Removes the disco from the screen
+	discoList.push(discos)
+	discos.kill();
+}
+
 
