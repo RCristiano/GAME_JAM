@@ -27,7 +27,7 @@ Torreta = function (index, game, player, bullets, x, y) {
     this.torreta.angle = game.rnd.angle(); //Angulo inicial random (eu acho)
 }
 
-Torreta.damage = function() {
+Torreta.prototype.damage = function() {
 
     this.health -= 1;
 
@@ -65,12 +65,10 @@ Torreta.prototype.update = function() {
 
 };
 
-inheritsFrom(Tornera, Torreta);
-
-
 Tornera = function () {
-    
 }
+
+inheritsFrom(Tornera, Torreta);
 
 function createEnemies () {
 
@@ -84,6 +82,8 @@ function createEnemies () {
     enemyBullets.setAll('anchor.y', 0.5);
     enemyBullets.setAll('outOfBoundsKill', true);
     enemyBullets.setAll('checkWorldBounds', true);
+
+    // Torreta1.kill();
 
     enemies.push(new Torreta(0, game, tank, enemyBullets, 100, 100));
 }
