@@ -83,12 +83,12 @@ function createEnemies () {
     enemyBullets.setAll('outOfBoundsKill', true);
     enemyBullets.setAll('checkWorldBounds', true);
 
-    // Torreta1.kill();
-
     enemies.push(new Torreta(0, game, tank, enemyBullets, 100, 100));
 }
 
 function updateEnemies () {
+
+    // if(torreta1.alive);
 
   // Torretas
   game.physics.arcade.overlap(enemyBullets, tank, bulletHitPlayer, null, this);
