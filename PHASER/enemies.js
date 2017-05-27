@@ -1,25 +1,8 @@
-Tornera = function (index, game, player, bullets, x, y) {
-  
-    this.game = game;
-    this.health = 3;
-    this.player = player;
-    this.bullets = bullets;
-    this.fireRate = 1000;
-    this.nextFire = 0;
-    this.alive = true;
+// var inheritsFrom = function (child, parent) {
+//     child.prototype = Object.create(parent.prototype);
+// };
 
-    this.baseTorreta = game.add.sprite(x, y, 'torret'); //Configurar
-    this.torreta = game.add.sprite(x, y, 'torret'); //Configurar
-
-    this.torreta.anchor.set(0.3, 0.5); //Configurar
-
-    this.torreta.name = index.toString();
-    game.physics.enable(this.baseTorreta, Phaser.Physics.ARCADE);
-    this.baseTorreta.body.immovable = true;
-    this.baseTorreta.body.collideWorldBounds = true;
-
-    this.torreta.angle = game.rnd.angle(); //Angulo inicial random (eu acho)
-}
+var enemies = [];
 
 Torreta = function (index, game, player, bullets, x, y) {
 
@@ -54,10 +37,10 @@ Torreta.prototype.damage = function() {
 
         // this.baseTorreta.kill();
         this.torreta.kill();
+        score++;
 
         return true;
     }
-
     return false;
 
 }
@@ -95,8 +78,7 @@ function createEnemies () {
     enemyBullets.setAll('outOfBoundsKill', true);
     enemyBullets.setAll('checkWorldBounds', true);
 
-    //Torretas
-    torreta1 = new Torreta(1, game, tank, enemyBullets, 100, 100);
+    enemies.push(new Torreta(0, game, tank, enemyBullets, 100, 100));
 }
 
 function updateEnemies () {
@@ -104,10 +86,33 @@ function updateEnemies () {
   // Torretas
   game.physics.arcade.overlap(enemyBullets, tank, bulletHitPlayer, null, this);
 
-  if (torreta1.alive) {
-    game.physics.arcade.collide(tank, torreta1.baseTorreta);
-    game.physics.arcade.overlap(bullets, torreta1.baseTorreta, bulletHitEnemy, null, this);
-    torreta1.update();
-  }
+    // if (torreta[0].alive) {
+    //   game.physics.arcade.collide(tank, torreta[0].baseTorreta);
+    //   game.physics.arcade.overlap(bullets, torreta[0].baseTorreta, bulletHitEnemy, null, this);
+    //   torreta[0].update();
+    // }
+
+
+}
+
+function bulletHitPlayer (tank, bullet) {
+
+    bullet.kill();
+    life--;
+
+}
+
+function bulletHitEnemy (tank, bullet) {
+
+    bullet.kill();
+
+    var destroyed = enemies[tank.name].damage();
+
+    if (destroyed)
+    {
+        var explosionAnimation = explosions.getFirstExists(false);
+        explosionAnimation.reset(tank.x, tank.y);
+        explosionAnimation.play('kaboom', 30, false, true);
+    }
 
 }

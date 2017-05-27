@@ -10,18 +10,20 @@
 
 <body>
 
+
 <script type="text/javascript" src="enemies.js"></script>
 
 <script type="text/javascript">
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
-function preload () { //CARREGA TODAS AS IMAGENS
+function preload () {
 
     game.load.image('logo', 'assets/logo.png');
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('room', 'assets/room.jpg');
     game.load.image('fundo', 'assets/fundo.jpg');
+    game.load.image('life', 'assets/life.png');
     game.load.spritesheet('star', 'assets/star.png', 13, 22, 4);
     game.load.spritesheet('kaboom', 'assets/explosion.png', 100, 100, 6);
     game.load.spritesheet('energybar', 'assets/energy.png', 150, 30, 3);
@@ -50,7 +52,7 @@ var logo;
 var stars;
 var score = 0;
 var energy = 0;
-
+var life = 20;
 var torreta;
 
 var move = 0;
@@ -70,6 +72,8 @@ function create () {
   rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
   space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   explo = game.input.keyboard.addKey(Phaser.Keyboard.E);
+
+
 
     //  Resize our game world to be a 2000 x 2000 square
     game.world.setBounds(-1000, -1000, 2000, 2000);
@@ -102,6 +106,8 @@ function create () {
     walke = tank.animations.add('walk', [1,2,3,4], 5, true);
 
 
+
+
     //  Our bullet group
     bullets = game.add.group();
     bullets.enableBody = true;
@@ -127,6 +133,9 @@ function create () {
     tank.bringToTop();
     turret.bringToTop();
 
+    //Torretas
+    torreta1 = new Torreta(1, game, tank, enemyBullets, 100, 100);
+
     logo = game.add.sprite(0, 0, 'logo');
     logo.fixedToCamera = true;
 
@@ -144,19 +153,38 @@ function create () {
     //  We will enable physics for any star that is created in this group
     stars.enableBody = true;
 
+
+
+
+
     //  Here we'll create 12 of them evenly spaced apart
     for (var i = 0; i < 12; i++)
     {
         //  Create a star inside of the 'stars' group
         var star = stars.create(i * 70, 200, 'star');
+        star.animations.add('walk');
+
+        star.animations.play('walk', 5, true);
 
 
     }
 
+    can = star.animations.add('can', [0,1,2,3], 10, true);
+    star.play('can');
 
 
-    energybar = game.add.sprite(50, 20, 'energybar');
+//HUD
+
+    energybar = game.add.sprite(550, 540, 'energybar');
     energybar.fixedToCamera = true;
+
+    for (var i = 0; i <= life; i++){
+      lifebar = game.add.sprite(30+i*30,40,'life');
+      lifebar.scale.setTo(0.3,0.3);
+      lifebar.fixedToCamera = true;
+    }
+
+
 
 }
 
@@ -169,7 +197,6 @@ function removeLogo () {
 
 function update () {
 
-  // Enemies
   updateEnemies();
 
   //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
@@ -216,6 +243,8 @@ function update () {
       }
     }
 
+
+
     if(upKey.isDown || downKey.isDown || leftKey.isDown || rightKey.isDown){
       tank.play('walk');
       turret.play('walk');
@@ -232,6 +261,7 @@ function update () {
       var explosionAnimation = explosions.getFirstExists(false);
         explosionAnimation.reset(tank.x, tank.y);
         explosionAnimation.play('kaboom', 30, false, true);
+        life--;
     }
 
     if(energy == 1){
@@ -287,27 +317,6 @@ if (move == 1){
 
 }
 
-function bulletHitPlayer (tank, bullet) {
-
-    bullet.kill();
-
-}
-
-function bulletHitEnemy (tank, bullet) {
-
-    bullet.kill();
-
-    var destroyed = torreta1.damage();
-
-    if (destroyed)
-    {
-        var explosionAnimation = explosions.getFirstExists(false);
-        explosionAnimation.reset(tank.x, tank.y);
-        explosionAnimation.play('kaboom', 30, false, true);
-    }
-
-}
-
 function fire () {
 
     if (game.time.now > nextFire && bullets.countDead() > 0)
@@ -335,7 +344,7 @@ if (arma == 0){
 function render () {
 
     // game.debug.text('Active Bullets: ' + bullets.countLiving() + ' / ' + bullets.length, 32, 32);
-    game.debug.text('Speed: ' + currentSpeed + ' / Score: ' + score + ' / Energy:' + energy, 32, 32);
+    game.debug.text( 'Life:' + life + ' / Score: ' + score + ' / Speed: ' + currentSpeed, 32, 32);
 
 }
 
@@ -345,7 +354,7 @@ function collectStar (tank, star) {
     star.kill();
 
     //  Add and update the score
-    score += 10;
+    //score += 10;
     if (energy < 3){
       energy++;
     }
