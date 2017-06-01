@@ -144,7 +144,7 @@ inheritsFrom(Torreta, Enemy);
 inheritsFrom(Tornera, Enemy);
 inheritsFrom(Zeruela, Enemy);
 inheritsFrom(Avoa, Enemy);
-// 
+//
 Tornera.prototype.update = function() {
 
     this.baseTorreta.x = this.torreta.x
@@ -176,7 +176,7 @@ Zeruela.prototype.update = function () {
     if (this.game.physics.arcade.distanceBetween(this.torreta, this.player) < 500)
     {
         this.torreta.rotation = this.game.physics.arcade.angleBetween(this.torreta, this.player);
-            
+
         if (this.game.physics.arcade.distanceBetween(this.torreta, this.player) > 100)
             game.physics.arcade.velocityFromRotation(this.torreta.rotation, 80, this.torreta.body.velocity);
 
@@ -200,7 +200,7 @@ Avoa.prototype.update = function () {
         this.torreta.rotation = this.game.physics.arcade.angleBetween(this.torreta, this.player);
         game.physics.arcade.velocityFromRotation(this.torreta.rotation, 200, this.torreta.body.velocity);
     }
-} 
+}
 
 function createEnemies () {
 
@@ -229,14 +229,14 @@ function createEnemies () {
     // Posiciona inimigos
     enemies.push(new Torreta(0, game, tank, enemyBullets, -60, 1500));
     enemies.push(new Torreta(1, game, tank, enemyBullets, 500, -500));
-    enemies.push(new Tornera(2, game, tank, tornerasBullets, -250, 530));
+    // enemies.push(new Tornera(2, game, tank, tornerasBullets, -250, 530));
     enemies.push(new Zeruela(3, game, tank, enemyBullets, 700, -202));
     enemies.push(new Avoa(4, game, tank, 800, -100));
     enemies.push(new Torreta(5, game, tank, enemyBullets, 427, 524));
     enemies.push(new Torreta(6, game, tank, enemyBullets, 170, 408));
-    enemies.push(new Zeruela(7, game, tank, tornerasBullets, -500, 528));
-    enemies.push(new Tornera(8, game, tank, tornerasBullets, -110, -520));
-    enemies.push(new Tornera(9, game, tank, tornerasBullets, -586, -232));
+    // enemies.push(new Zeruela(7, game, tank, tornerasBullets, -500, 528));
+    // enemies.push(new Tornera(8, game, tank, tornerasBullets, -110, -520));
+    // enemies.push(new Tornera(9, game, tank, tornerasBullets, -586, -232));
     enemies.push(new Avoa(10, game, tank, 500, 500));
 }
 
