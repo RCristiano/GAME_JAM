@@ -603,7 +603,7 @@ if (arma == 0){
 
 function render () {
 
-  game.debug.text('Active Bullets: ' + bullets.countLiving() + ' / ' + bullets.length, 32, 32);
+  game.debug.text('Active Bullets: ' + bullets.countLiving() + ' / ' + bullets.length + ' Enemy bullets: ' + enemyBullets.countLiving() + ' / ' + enemyBullets.length, 32, 32);
  //game.debug.text( 'Life:' + life + ' / Score: ' + score + ' / Speed: ' + currentSpeed + ' / X: ' + tank.x + 'Y: ' + tank.y, 32, 32);
 
 }
